@@ -14,11 +14,13 @@ jobs:
         run: |
           mkdir -p data
           for s in 2223 2324 2425 2526 2627; do
-            for c in E0 SP1 I1 D1 F1 T1 N1 P1 B1; do
+            for c in E0 SP1 I1 D1 F1 T1 N1 P1 B1 E1 SC0 G1 I2 D2; do
               curl -fsSL -A "Mozilla/5.0" "https://www.football-data.co.uk/mmz4281/$s/$c.csv" -o "data/${c}_$s.csv" || curl -fsSL -A "Mozilla/5.0" "http://www.football-data.co.uk/mmz4281/$s/$c.csv" -o "data/${c}_$s.csv" || rm -f "data/${c}_$s.csv"
             done
           done
-          curl -fsSL -A "Mozilla/5.0" "https://www.football-data.co.uk/new/BRA.csv" -o "data/BRA.csv" || rm -f "data/BRA.csv"
+          for c in BRA AUT SWZ DNK NOR SWE USA ARG; do
+            curl -fsSL -A "Mozilla/5.0" "https://www.football-data.co.uk/new/$c.csv" -o "data/$c.csv" || rm -f "data/$c.csv"
+          done
       - name: Kaydet
         run: |
           git config user.name "bot"
@@ -26,4 +28,3 @@ jobs:
           git add data
           git commit -m "veri guncelle" || exit 0
           git push
-
