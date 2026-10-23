@@ -27,7 +27,7 @@ jobs:
             get "https://www.football-data.co.uk/new/$c.csv" "data/$c.csv"
           done
           for s in 2627 2526 2425 2324 2223; do
-            for c in E0 SP1 I1 D1 F1 T1 N1 P1 B1 E1 SC0 G1 I2 D2; do
+            for c in E0 SP1 I1 D1 F1 T1 N1 P1 B1 E1 SC0 G1 I2 D2 F2 SP2; do
               if [ "$s" != "2627" ] && [ -s "data/${c}_$s.csv" ]; then continue; fi
               get "https://www.football-data.co.uk/mmz4281/$s/$c.csv" "data/${c}_$s.csv"
             done
