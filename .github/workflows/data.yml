@@ -26,9 +26,16 @@ jobs:
           for c in BRA USA AUT SWZ DNK NOR SWE ARG; do
             get "https://www.football-data.co.uk/new/$c.csv" "data/$c.csv"
           done
-          for s in 2627 2526 2425 2324 2223; do
+          d="${SIM_DATE:-$(date +%Y-%m-%d)}"
+          yy=$(date -d "$d" +%y); mm=$(date -d "$d" +%m)
+          if [ "$((10#$mm))" -ge 7 ]; then a=$((10#$yy)); else a=$((10#$yy - 1)); fi
+          seasons=""
+          for i in 0 1 2 3 4; do b=$((a - i)); seasons="$seasons $(printf '%02d%02d' $b $((b + 1)))"; done
+          cur=$(printf '%02d%02d' $a $((a + 1)))
+          echo "Sezonlar:$seasons (guncel: $cur)"
+          for s in $seasons; do
             for c in E0 SP1 I1 D1 F1 T1 N1 P1 B1 E1 SC0 G1 I2 D2 F2 SP2; do
-              if [ "$s" != "2627" ] && [ -s "data/${c}_$s.csv" ]; then continue; fi
+              if [ "$s" != "$cur" ] && [ -s "data/${c}_$s.csv" ]; then continue; fi
               get "https://www.football-data.co.uk/mmz4281/$s/$c.csv" "data/${c}_$s.csv"
             done
           done
