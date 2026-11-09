@@ -39,6 +39,22 @@ jobs:
               get "https://www.football-data.co.uk/mmz4281/$s/$c.csv" "data/${c}_$s.csv"
             done
           done
+          mkdir -p data/elo
+          getE() {
+            tmp=$(mktemp)
+            if curl -fsSL --retry 4 --retry-delay 5 -A "$UA" "$1" -o "$tmp" && head -n 1 "$tmp" | grep -qi "Elo"; then
+              mv "$tmp" "$2"; echo "OK    $2"
+            else
+              rm -f "$tmp"; echo "HATA  $2 ($1)"
+            fi
+            sleep 2
+          }
+          getE "http://api.clubelo.com/$(date -d "$d" +%Y-%m-%d)" "data/elo/latest.csv"
+          ebase=$(date -d "$d" +%Y-%m-01)
+          for i in $(seq 0 50); do
+            edt=$(date -d "$ebase -$i month" +%Y-%m-%d)
+            if [ ! -s "data/elo/$edt.csv" ]; then getE "http://api.clubelo.com/$edt" "data/elo/$edt.csv"; fi
+          done
           echo "--- data klasoru ---"
           ls -la data
       - name: Kaydet
